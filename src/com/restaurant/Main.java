@@ -13,6 +13,7 @@ public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
     private static Cart cart = new Cart();
+    private static OrderValidator orderValidator = new OrderValidator();
     private static BillCalculator billCalculator = new BillCalculator();
     private static ArrayList<Order> orderHistory = new ArrayList<>();
     private static HashSet<String> orderIdSet = new HashSet<>();
@@ -88,8 +89,7 @@ public class Main {
         }
 
         int qty = readInt("Enter quantity for " + item.getName() + ": ");
-        if (qty <= 0) {
-            System.out.println("[Error] Quantity must be at least 1.");
+        if (!orderValidator.isValidQuantity(qty)) {
             return;
         }
 
@@ -107,7 +107,7 @@ public class Main {
         int id = readInt("\nEnter Item ID to modify: ");
         int newQty = readInt("Enter new quantity: ");
 
-        if (newQty <= 0) {
+        if (!orderValidator.isValidQuantity(newQty)) {
             System.out.println("[Notice] Use option 5 to remove an item.");
             return;
         }
@@ -132,12 +132,22 @@ public class Main {
     }
 
     private static void checkout() {
-        if (cart.isEmpty()) {
-            System.out.println("[Notice] Your cart is empty! Add items first.");
+        if (!orderValidator.isValidOrder(cart)) {
             return;
         }
 
         viewCart();
+
+        System.out.print("Enter your name: ");
+        String customerName = scanner.nextLine().trim();
+
+        System.out.print("Enter your 10-digit phone number: ");
+        String customerPhone = scanner.nextLine().trim();
+
+        Customer customer = new Customer(customerName, customerPhone);
+        if (!orderValidator.isValidCustomer(customer)) {
+            return;
+        }
 
         double subtotal = billCalculator.calculateSubtotal(cart);
         double discount = billCalculator.calculateDiscount(subtotal);
@@ -213,6 +223,8 @@ public class Main {
 
             cart.clear();
             System.out.println("\n[SUCCESS] Payment verified and Order placed successfully!");
+            System.out.println("\n--- CUSTOMER DETAILS ---");
+            customer.displayCustomerDetails();
             System.out.println("\n" + order.generateReceipt());
         } else {
             System.out.println(
