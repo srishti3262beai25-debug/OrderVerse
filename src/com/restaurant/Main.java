@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
+    private static RestaurantInfo restaurantInfo = new RestaurantInfo("OrderVerse Restaurant", "Rajpura, Punjab", "9876543210");
     private static Cart cart = new Cart();
     private static OrderValidator orderValidator = new OrderValidator();
     private static BillCalculator billCalculator = new BillCalculator();
@@ -32,7 +33,7 @@ public class Main {
 
         while (running) {
             displayMenuOptions();
-            int choice = readInt("Enter your choice (1-9): ");
+            int choice = readInt("Enter your choice (1-10): ");
 
             switch (choice) {
                 case 1: Menu.displayMenu(); break;
@@ -43,12 +44,15 @@ public class Main {
                 case 6: checkout(); break;
                 case 7: viewOrderHistory(); break;
                 case 8: searchOrder(); break;
+                case 10:
+                    restaurantInfo.displayInfo();
+                    break;
                 case 9:
                     System.out.println("\nThank you for visiting OrderVerse! Have a great day!");
                     running = false;
                     break;
                 default:
-                    System.out.println("[Error] Please enter a valid choice between 1 and 9.");
+                    System.out.println("[Error] Please enter a valid choice between 1 and 10.");
             }
 
             if (running) {
@@ -72,6 +76,7 @@ public class Main {
         System.out.println("  7. View Order History");
         System.out.println("  8. Search Order");
         System.out.println("  9. Exit");
+        System.out.println(" 10. Restaurant Information");
         System.out.println("========================================");
     }
 
@@ -335,4 +340,6 @@ public class Main {
             }
         }
     }
+
+
 }
